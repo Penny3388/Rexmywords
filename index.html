@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的英文單字本</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        h2 { text-align: center; color: #2c3e50; }
+        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .word-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; }
+        .word-card:active { background: #e8f0fe; }
+        .word-info { flex-grow: 1; }
+        .english { font-size: 18px; font-weight: bold; color: #2980b9; display: block; }
+        .chinese { font-size: 14px; color: #7f8c8d; }
+        .play-btn { background-color: #3498db; color: white; border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; outline: none; -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body>
+
+    <h2>📍 地點單字集</h2>
+    <input type="text" id="searchInput" class="search-box" placeholder="搜尋單字..." onkeyup="filterWords()">
+
+    <div id="wordList">
+        </div>
+
+    <script>
+        const words = [
+            { en: "area", ch: "區" },
+            { en: "address", ch: "住址" },
+            { en: "bar", ch: "酒吧" },
+            { en: "basement", ch: "地下室" },
+            { en: "building", ch: "建築物" },
+            { en: "cafeteria", ch: "自助餐館" },
+            { en: "campus", ch: "校園" },
+            { en: "coast", ch: "海岸" },
+            { en: "college", ch: "學院" },
+            { en: "company", ch: "公司" }
+        ];
+
+        const wordListDiv = document.getElementById('wordList');
+
+        function displayWords(data) {
+            wordListDiv.innerHTML = '';
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'word-card';
+                card.onclick = () => speak(item.en);
+                card.innerHTML = `
+                    <div class="word-info">
+                        <span class="english">${item.en}</span>
+                        <span class="chinese">${item.ch}</span>
+                    </div>
+                    <button class="play-btn">🔊</button>
+                `;
+                wordListDiv.appendChild(card);
+            });
+        }
+
+        function speak(text) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            msg.rate = 0.9; // 稍微放慢一點點，聽得更清楚
+            window.speechSynthesis.cancel(); // 停止目前正在唸的
+            window.speechSynthesis.speak(msg);
+        }
+
+        function filterWords() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = words.filter(w => w.en.toLowerCase().includes(term) || w.ch.includes(term));
+            displayWords(filtered);
+        }
+
+        displayWords(words);
+    </script>
+</body>
+</html>
