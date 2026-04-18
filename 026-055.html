@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>026-055</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        header { text-align: center; padding-bottom: 20px; }
+        .back-btn { display: inline-block; margin-bottom: 15px; color: #3498db; text-decoration: none; font-weight: bold; }
+        .search-box { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #3498db; border-radius: 25px; box-sizing: border-box; font-size: 16px; outline: none; }
+        .word-list { display: grid; gap: 10px; }
+        .word-card { background: white; padding: 18px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); -webkit-tap-highlight-color: transparent; }
+        .word-card:active { background: #e3f2fd; transform: scale(0.98); }
+        .word-info { flex-grow: 1; }
+        .english { font-size: 20px; font-weight: bold; color: #2c3e50; display: block; margin-bottom: 4px; }
+        .chinese { font-size: 15px; color: #34495e; background: #eee; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        .play-icon { font-size: 24px; color: #3498db; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">⬅ 回目錄</a>
+        <h2>026-055</h2>
+        <input type="text" id="searchInput" class="search-box" placeholder="搜尋英文或中文..." onkeyup="filterWords()">
+    </header>
+
+    <div id="wordList" class="word-list"></div>
+
+    <script>
+        const words = [
+            // 場所與空間
+            { en: "KTV", ch: "KTV" }, { en: "mall", ch: "購物中心" }, { en: "meeting", ch: "會議" },
+            { en: "overpass", ch: "天橋" }, { en: "plain", ch: "平原" }, { en: "position", ch: "位置" },
+            { en: "post", ch: "崗位；杆" }, { en: "prison", ch: "監獄" }, { en: "region", ch: "地區" },
+            { en: "ruin", ch: "廢墟；毀壞" }, { en: "scene", ch: "現場" }, { en: "section", ch: "部分" },
+            { en: "society", ch: "社會" }, { en: "spot", ch: "地點；斑點" }, { en: "stage", ch: "舞台；階段" },
+            { en: "toilet", ch: "廁所" }, { en: "tower", ch: "塔" }, { en: "trap", ch: "陷阱" },
+            { en: "university", ch: "大學" }, { en: "village", ch: "村落" }, { en: "zone", ch: "地帶" },
+            // 動物
+            { en: "cockroach", ch: "蟑螂" }, { en: "crab", ch: "螃蟹" }, { en: "deer", ch: "鹿" },
+            { en: "dinosaur", ch: "恐龍" }, { en: "dolphin", ch: "海豚" }, { en: "donkey", ch: "驢" },
+            { en: "eagle", ch: "鷹" }, { en: "hippopotamus", ch: "河馬" }, { en: "kitten", ch: "小貓" }
+        ];
+
+        const wordListDiv = document.getElementById('wordList');
+
+        function displayWords(data) {
+            wordListDiv.innerHTML = '';
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'word-card';
+                card.onclick = (e) => { if(e.target.className !== 'chinese') speak(item.en); };
+                card.innerHTML = `
+                    <div class="word-info">
+                        <span class="english">${item.en}</span>
+                        <span class="chinese" onclick="toggleChinese(this)">點擊看中文</span>
+                        <span class="real-ch" style="display:none">${item.ch}</span>
+                    </div>
+                    <div class="play-icon">🔊</div>
+                `;
+                wordListDiv.appendChild(card);
+            });
+        }
+
+        function toggleChinese(el) {
+            const realCh = el.nextElementSibling.innerText;
+            if (el.innerText === '點擊看中文') {
+                el.innerText = realCh;
+                el.style.background = '#d1e7dd';
+            } else {
+                el.innerText = '點擊看中文';
+                el.style.background = '#eee';
+            }
+        }
+
+        function speak(text) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            msg.rate = 0.8; 
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(msg);
+        }
+
+        function filterWords() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = words.filter(w => w.en.toLowerCase().includes(term) || w.ch.includes(term));
+            displayWords(filtered);
+        }
+
+        displayWords(words);
+    </script>
+</body>
+</html>
