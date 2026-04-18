@@ -3,39 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的英文單字本</title>
+    <title>我的行動單字本</title>
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
-        h2 { text-align: center; color: #2c3e50; }
-        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        .word-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; }
-        .word-card:active { background: #e8f0fe; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        header { text-align: center; padding-bottom: 20px; }
+        .search-box { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #3498db; border-radius: 25px; box-sizing: border-box; font-size: 16px; outline: none; }
+        .word-list { display: grid; gap: 10px; }
+        .word-card { background: white; padding: 18px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); -webkit-tap-highlight-color: transparent; }
+        .word-card:active { background: #e3f2fd; transform: scale(0.98); }
         .word-info { flex-grow: 1; }
-        .english { font-size: 18px; font-weight: bold; color: #2980b9; display: block; }
-        .chinese { font-size: 14px; color: #7f8c8d; }
-        .play-btn { background-color: #3498db; color: white; border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; outline: none; -webkit-tap-highlight-color: transparent; }
+        .english { font-size: 20px; font-weight: bold; color: #2c3e50; display: block; margin-bottom: 4px; }
+        .chinese { font-size: 15px; color: #34495e; background: #eee; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        .play-icon { font-size: 24px; color: #3498db; margin-left: 10px; }
     </style>
 </head>
 <body>
 
-    <h2>📍 地點單字集</h2>
-    <input type="text" id="searchInput" class="search-box" placeholder="搜尋單字..." onkeyup="filterWords()">
+    <header>
+        <h2>📖 我的英文隨身卡</h2>
+        <input type="text" id="searchInput" class="search-box" placeholder="搜尋英文或中文..." onkeyup="filterWords()">
+    </header>
 
-    <div id="wordList">
-        </div>
+    <div id="wordList" class="word-list"></div>
 
     <script>
+        // 這是你的單字庫，未來可以繼續增加
         const words = [
-            { en: "area", ch: "區" },
-            { en: "address", ch: "住址" },
-            { en: "bar", ch: "酒吧" },
-            { en: "basement", ch: "地下室" },
-            { en: "building", ch: "建築物" },
-            { en: "cafeteria", ch: "自助餐館" },
-            { en: "campus", ch: "校園" },
-            { en: "coast", ch: "海岸" },
-            { en: "college", ch: "學院" },
-            { en: "company", ch: "公司" }
+            { en: "Taiwanese", ch: "台灣人" },
+            { en: "Taoyuan", ch: "桃園" },
+            { en: "branch", ch: "樹枝；分枝" },
+            { en: "bundle", ch: "束" },
+            { en: "dawn", ch: "黎明" },
+            { en: "diamond", ch: "鑽石" },
+            { en: "element", ch: "元素；元件" },
+            { en: "energy", ch: "能源" },
+            { en: "environment", ch: "環境" },
+            { en: "field", ch: "田野；領域" },
+            { en: "fog", ch: "霧" },
+            { en: "forest", ch: "森林" },
+            { en: "gasoline", ch: "汽油" },
+            { en: "hole", ch: "孔；洞" },
+            { en: "iron", ch: "鐵" },
+            { en: "leaf", ch: "葉子" },
+            { en: "lightning", ch: "閃電" },
+            { en: "liquid", ch: "液體" },
+            { en: "natural", ch: "自然的" },
+            { en: "nest", ch: "巢" },
+            { en: "ocean", ch: "海洋" },
+            { en: "rose", ch: "玫瑰" },
+            { en: "root", ch: "根" },
+            { en: "sand", ch: "砂" },
+            { en: "shore", ch: "岸邊" },
+            { en: "silence", ch: "安靜" },
+            { en: "silent", ch: "無聲的" },
+            { en: "source", ch: "資源" },
+            { en: "steam", ch: "蒸氣" },
+            { en: "stick", ch: "棒；枝條" }
         ];
 
         const wordListDiv = document.getElementById('wordList');
@@ -45,23 +68,39 @@
             data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'word-card';
-                card.onclick = () => speak(item.en);
+                // 點擊卡片發音
+                card.onclick = (e) => {
+                    if(e.target.className !== 'chinese') speak(item.en);
+                };
                 card.innerHTML = `
                     <div class="word-info">
                         <span class="english">${item.en}</span>
-                        <span class="chinese">${item.ch}</span>
+                        <span class="chinese" onclick="toggleChinese(this)">點擊看中文</span>
+                        <span class="real-ch" style="display:none">${item.ch}</span>
                     </div>
-                    <button class="play-btn">🔊</button>
+                    <div class="play-icon">🔊</div>
                 `;
                 wordListDiv.appendChild(card);
             });
         }
 
+        // 隱藏/顯示中文的功能
+        function toggleChinese(el) {
+            const realCh = el.nextElementSibling.innerText;
+            if (el.innerText === '點擊看中文') {
+                el.innerText = realCh;
+                el.style.background = '#d1e7dd';
+            } else {
+                el.innerText = '點擊看中文';
+                el.style.background = '#eee';
+            }
+        }
+
         function speak(text) {
             const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'en-US';
-            msg.rate = 0.9; // 稍微放慢一點點，聽得更清楚
-            window.speechSynthesis.cancel(); // 停止目前正在唸的
+            msg.rate = 0.8; 
+            window.speechSynthesis.cancel();
             window.speechSynthesis.speak(msg);
         }
 
