@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的英文單字本目錄</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; text-align: center; padding: 40px 20px; }
+        .menu-container { max-width: 400px; margin: 0 auto; }
+        .menu-btn { 
+            display: block; padding: 20px; margin: 15px 0;
+            background: white; color: #2980b9; text-decoration: none;
+            border-radius: 15px; font-weight: bold; font-size: 18px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;
+        }
+        .menu-btn:active { transform: scale(0.95); background: #e3f2fd; }
+    </style>
+</head>
+<body>
+    <h2>📚 單字複習目錄</h2>
+    <div class="menu-container">
+        <a href="nature.html" class="menu-btn">🌿 自然與地點篇</a>
+        </div>
+</body>
+</html>
