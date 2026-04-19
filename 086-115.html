@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界與台灣篇 - 單字本</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        header { text-align: center; padding-bottom: 20px; }
+        .back-btn { display: inline-block; margin-bottom: 15px; color: #3498db; text-decoration: none; font-weight: bold; }
+        .search-box { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #3498db; border-radius: 25px; box-sizing: border-box; font-size: 16px; outline: none; }
+        .word-list { display: grid; gap: 10px; }
+        .word-card { background: white; padding: 18px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); -webkit-tap-highlight-color: transparent; }
+        .word-card:active { background: #e3f2fd; transform: scale(0.98); }
+        .word-info { flex-grow: 1; }
+        .english { font-size: 20px; font-weight: bold; color: #2c3e50; display: block; margin-bottom: 4px; }
+        .chinese { font-size: 15px; color: #34495e; background: #eee; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        .play-icon { font-size: 24px; color: #3498db; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">⬅ 回目錄</a>
+        <h2>086-115</h2>
+        <input type="text" id="searchInput" class="search-box" placeholder="搜尋英文或中文..." onkeyup="filterWords()">
+    </header>
+
+    <div id="wordList" class="word-list"></div>
+
+    <script>
+        const words = [
+            // 世界與歐洲
+            { en: "European", ch: "歐洲人；歐洲的" }, { en: "France", ch: "法國" }, { en: "French", ch: "法語；法國人" },
+            { en: "German", ch: "德語；德國人" }, { en: "Germany", ch: "德國" }, { en: "Europe", ch: "歐洲" },
+            { en: "London", ch: "倫敦" }, { en: "Paris", ch: "巴黎" }, { en: "Russia", ch: "俄國" }, 
+            { en: "Russian", ch: "俄語；俄國人" }, { en: "kingdom", ch: "王國" },
+            // 亞洲與其他
+            { en: "Hong Kong", ch: "香港" }, { en: "Japan", ch: "日本" }, { en: "Japanese", ch: "日語；日本人" },
+            { en: "Korea", ch: "韓國" }, { en: "Korean", ch: "韓語；韓國人" }, { en: "Singapore", ch: "新加坡" },
+            { en: "Philippines", ch: "菲律賓" }, { en: "Mandarin", ch: "普通話；北京話" },
+            { en: "New York", ch: "紐約" }, { en: "overseas", ch: "海外" }, { en: "state", ch: "州" },
+            // 政治與國家
+            { en: "government", ch: "政府" }, { en: "international", ch: "國際的" }, { en: "nation", ch: "國家" },
+            { en: "Republic of China", ch: "中華民國" },
+            // 台灣城市
+            { en: "Hualien", ch: "花蓮" }, { en: "Kaohsiung", ch: "高雄" }, { en: "Taichung", ch: "台中" },
+            { en: "Tainan", ch: "台南" }, { en: "Taitung", ch: "台東" }
+        ];
+
+        const wordListDiv = document.getElementById('wordList');
+
+        function displayWords(data) {
+            wordListDiv.innerHTML = '';
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'word-card';
+                card.onclick = (e) => { if(e.target.className !== 'chinese') speak(item.en); };
+                card.innerHTML = `
+                    <div class="word-info">
+                        <span class="english">${item.en}</span>
+                        <span class="chinese" onclick="toggleChinese(this)">點擊看中文</span>
+                        <span class="real-ch" style="display:none">${item.ch}</span>
+                    </div>
+                    <div class="play-icon">🔊</div>
+                `;
+                wordListDiv.appendChild(card);
+            });
+        }
+
+        function toggleChinese(el) {
+            const realCh = el.nextElementSibling.innerText;
+            if (el.innerText === '點擊看中文') {
+                el.innerText = realCh;
+                el.style.background = '#d1e7dd';
+            } else {
+                el.innerText = '點擊看中文';
+                el.style.background = '#eee';
+            }
+        }
+
+        function speak(text) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            msg.rate = 0.8; 
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(msg);
+        }
+
+        function filterWords() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = words.filter(w => w.en.toLowerCase().includes(term) || w.ch.includes(term));
+            displayWords(filtered);
+        }
+
+        displayWords(words);
+    </script>
+</body>
+</html>
