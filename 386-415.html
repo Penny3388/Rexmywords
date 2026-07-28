@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家居與工具篇 - 單字本</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        header { text-align: center; padding-bottom: 20px; }
+        .back-btn { display: inline-block; margin-bottom: 15px; color: #3498db; text-decoration: none; font-weight: bold; }
+        .search-box { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #3498db; border-radius: 25px; box-sizing: border-box; font-size: 16px; outline: none; }
+        .word-list { display: grid; gap: 10px; }
+        .word-card { background: white; padding: 18px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.05); -webkit-tap-highlight-color: transparent; }
+        .word-card:active { background: #e3f2fd; transform: scale(0.98); }
+        .word-info { flex-grow: 1; }
+        .english { font-size: 20px; font-weight: bold; color: #2c3e50; display: block; margin-bottom: 4px; }
+        .chinese { font-size: 15px; color: #34495e; background: #eee; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        .play-icon { font-size: 24px; color: #3498db; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">⬅ 回目錄</a>
+        <h2>🏠 386-415</h2>
+        <input type="text" id="searchInput" class="search-box" placeholder="搜尋英文或中文..." onkeyup="filterWords()">
+    </header>
+
+    <div id="wordList" class="word-list"></div>
+
+    <script>
+        const words = [
+            { en: "ceiling", ch: "天花板" },
+            { en: "crayon", ch: "蠟筆" },
+            { en: "curtain", ch: "窗簾" },
+            { en: "dryer", ch: "烘乾機" },
+            { en: "electric", ch: "電的" },
+            { en: "faucet", ch: "水龍頭" },
+            { en: "fault", ch: "故障" },
+            { en: "fence", ch: "籬笆" },
+            { en: "flag", ch: "旗" },
+            { en: "flashlight", ch: "手電筒" },
+            { en: "function", ch: "功能" },
+            { en: "furniture", ch: "家具" },
+            { en: "hammer", ch: "錘子" },
+            { en: "hanger", ch: "衣架" },
+            { en: "heater", ch: "加熱器" },
+            { en: "ink", ch: "墨水" },
+            { en: "instrument", ch: "儀器" },
+            { en: "lock", ch: "鎖" },
+            { en: "magazine", ch: "雜誌" },
+            { en: "mass", ch: "塊" },
+            { en: "mechanic", ch: "機工；技工" },
+            { en: "metal", ch: "金屬" },
+            { en: "mirror", ch: "鏡子" },
+            { en: "needle", ch: "針" },
+            { en: "pile", ch: "木樁；堆" },
+            { en: "pillow", ch: "枕頭" },
+            { en: "printer", ch: "印刷機；印表機" },
+            { en: "pump", ch: "泵；幫浦" },
+            { en: "roof", ch: "屋頂" },
+            { en: "rubber", ch: "橡膠" }
+        ];
+
+        const wordListDiv = document.getElementById('wordList');
+
+        function displayWords(data) {
+            wordListDiv.innerHTML = '';
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'word-card';
+                card.onclick = (e) => { if(e.target.className !== 'chinese') speak(item.en); };
+                card.innerHTML = `
+                    <div class="word-info">
+                        <span class="english">${item.en}</span>
+                        <span class="chinese" onclick="toggleChinese(this)">點擊看中文</span>
+                        <span class="real-ch" style="display:none">${item.ch}</span>
+                    </div>
+                    <div class="play-icon">🔊</div>
+                `;
+                wordListDiv.appendChild(card);
+            });
+        }
+
+        function toggleChinese(el) {
+            const realCh = el.nextElementSibling.innerText;
+            if (el.innerText === '點擊看中文') {
+                el.innerText = realCh;
+                el.style.background = '#d1e7dd';
+            } else {
+                el.innerText = '點擊看中文';
+                el.style.background = '#eee';
+            }
+        }
+
+        function speak(text) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            msg.rate = 0.75; 
+            msg.pitch = 0.9;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(msg);
+        }
+
+        function filterWords() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = words.filter(w => w.en.toLowerCase().includes(term) || w.ch.includes(term));
+            displayWords(filtered);
+        }
+
+        displayWords(words);
+    </script>
+</body>
+</html>
